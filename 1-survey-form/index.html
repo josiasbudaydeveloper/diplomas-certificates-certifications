@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Survey Form Project</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1 id="title">Survey Form Project</h1>
+  <p id="description">This is my Survey Form's Project</p>
+  <form id="survey-form">
+
+    <label for="name" id="name-label">
+      Name:<br>
+      <input type="text" id="name" name="name" required placeholder="Type your name">
+    </label>
+
+    <label for="email" id="email-label">
+      Email:<br>
+      <input type="email" id="email" name="email" required placeholder="Type your email">
+    </label>
+
+    <label for="number" id="number-label">
+      Number:<br>
+      <input type="number" id="number" name="number" required min="1" max="10" placeholder="Type your number">
+    </label>
+
+    <label for="dropdown">
+      Country:<br>
+      <select id="dropdown">
+        <option value="brazil">Brazil</option>
+        <option value="usa">USA</option>
+      </select>
+    </label>
+
+    <fieldset id="gender">
+      Gender:
+      <label for="m">
+        <input type="radio" value="m" id="m" name="gender"> Masculine
+      </label>
+      <label for="f">
+        <input type="radio" value="f" id="f" name="gender"> Feminine
+      </label>
+    </fieldset>
+
+    <fieldset id="hard-skills">
+      Hard-Skills:
+      <label for="front-end">
+        <input type="checkbox" value="front-end" name="hard-skills" id="front-end"> Front-End
+      </label>
+      <label for="back-end">
+        <input type="checkbox" value="back-end" name="hard-skills" id="back-end"> Back-End
+      </label>
+  </fieldset>
+
+  <label for="bio">
+    Bio:<br>
+    <textarea id="bio" name="bio" placeholder="Tell us about you" rows="4"></textarea>
+  </label>
+
+  <input type="submit" id="submit" value="submit">
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>Express Docs</title>
+</head>
+<body>  
+  <!-- Navigation Content -->
+  <nav id="navbar">
+    <!-- Header -->
+    <header>
+    <h1>Express.<span class="not-bold">js</span>
+    <span class="subtitle">Unofficial Documentation</span></h1>
+    </header>
+
+    <div id="nav-background"></div>
+    <ul>
+      <a href="#overview" class="nav-link"><li>Overview</li></a>
+      <a href="#installing" class="nav-link"><li>Installing</li></a>
+      <a href="#hello_world" class="nav-link"><li>Hello World</li></a>
+      <a href="#express_generator" class="nav-link"><li>Express Generator</li></a>
+      <a href="#basic_routing" class="nav-link"><li>Basic Routing</li></a>
+      <a href="#static_files" class="nav-link"><li>Static Files</li></a>
+      <a href="#more_examples" class="nav-link"><li>More examples</li></a>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-doc">
+    <!-- Overview Section -->
+    <section class="main-section" id="overview">
+      <header><h2>Overview</h2></header>
+      <p>
+      Express.js is a Fast, unopinionated, minimalist   web framework for Node.js
+      </p>
+    </section>
+
+    <!-- Installing Section -->
+    <section class="main-section" id="installing">
+      <header><h2>Installing</h2></header>
+      <p>
+        Assuming you’ve already installed Node.js, create a directory to hold your application, and make that your working directory.
+      </p>
+      <code>
+        $ mkdir myapp <br>
+        $ cd myapp
+      </code>
+
+      <p>
+Use the npm init command to create a package.json file for your application. For more information on how package.json works, see Specifics of npm’s package.json handling.
+      </p>
+      <code>
+        $ npm init
+      </code>
+
+      <p>
+        This command prompts you for a number of things, such as the name and version of your application. For now, you can simply hit RETURN to accept the defaults for most of them, with the following exception:
+      </p>
+      <code>
+        entry point: (index.js)
+      </code>
+
+      <p>
+        Enter app.js, or whatever you want the name of the main file to be. If you want it to be index.js, hit RETURN to accept the suggested default file name.
+
+Now install Express in the myapp directory and save it in the dependencies list. For example:
+      </p>
+      <code>
+        $ npm install express
+      </code>
+
+      <p>
+        To install Express temporarily and not add it to the dependencies list:
+      </p>
+      <code>
+        $ npm install express --no-save
+      </code>
+
+      <p class="note">
+        By default with version npm 5.0+ npm install adds the module to the dependencies list in the package.json file; with earlier versions of npm, you must specify the --save option explicitly. Then, afterwards, running npm install in the app directory will automatically install modules in the dependencies list.
+        <p>
+
+    </section>
+
+    <!-- Hello World Section -->
+    <section class="main-section" id="hello_world">
+      <header><h2>Hello World</h2></header>
+      <p class="note">
+        Embedded below is essentially the simplest Express app you can create. It is a single file app — not what you’d get if you use the Express generator, which creates the scaffolding for a full app with numerous JavaScript files, Jade templates, and sub-directories for various purposes.
+      </p>
+      <code>
+        const express = require('express') <br>
+const app = express() <br>
+const port = 3000 <br>
+ <br>
+app.get('/', (req, res) => { <br>
+  res.send('Hello World!') <br>
+}) <br>
+ <br>
+app.listen(port, () => { <br>
+  console.log(`Example app listening on port ${port}`) <br>
+})
+      </code>
+
+      <p>
+        This app starts a server and listens on port 3000 for connections. The app responds with “Hello World!” for requests to the root URL (/) or route. For every other path, it will respond with a 404 Not Found.
+
+The example above is actually a working server: Go ahead and click on the URL shown. You’ll get a response, with real-time logs on the page, and any changes you make will be reflected in real time. This is powered by RunKit, which provides an interactive JavaScript playground connected to a complete Node environment that runs in your web browser. Below are instructions for running the same app on your local machine.
+      </p>
+      
+      <p class="note">
+        RunKit is a third-party service not affiliated with the Express project.
+      </p>
+
+      <h3>Running Locally</h3>
+      <p>
+        First create a directory named myapp, change to it and run npm init. Then install express as a dependency, as per the installation guide.
+
+In the myapp directory, create a file named app.js and copy in the code from the example above.
+      </p>
+
+      <p class="note">
+        The req (request) and res (response) are the exact same objects that Node provides, so you can invoke req.pipe(), req.on('data', callback), and anything else you would do without Express involved.
+      </p>
+
+      <p>
+        Run the app with the following command:
+      </p>
+      <code>
+        $ node app.js
+      </code>
+
+      <p>
+        Then, load http://localhost:3000/ in a browser to see the output.
+      </p>
+    </section>
+
+    <!-- Express Generator Section -->
+    <section class="main-section" id="express_generator">
+      <header><h2>Express Generator</h2></header>
+      [...]
+    </section>
+
+    <!-- Basic Routing Section -->
+    <section class="main-section" id="basic_routing">
+      <header><h2>Basic Routing</h2></header>
+      [...]
+    </section>
+
+    <!-- Static Files Section -->
+    <section class="main-section" id="static_files">
+      <header><h2>Static Files</h2></header>
+      [...]
+    </section>
+
+    <!-- More Examples Section -->
+    <section class="main-section" id="more_examples">
+      <header><h2>More examples</h2></header>
+      <p>
+        This page contains list of examples using Express.
+      </p>
+      <ul>
+        <li><a href="">auth - Authentication</a> with login and password</li>
+        <li><a href="">content-negotiation</a> - HTTP content negotiation</li>
+        <li><a href="">cookie-sessions</a> - Working with cookie-based sessions</li>
+        <li><a href="">cookies</a> - Working with cookies</li>
+        <li><a href="">downloads</a> - Transferring files to client</li>
+        <li><a href="">ejs</a> - Working with Embedded JavaScript templating (ejs)</li>
+        <li><a>error-pages</a> - Creating error pages</li>
+        <li><a href="">error</a> - Working with error middleware</li>
+        <li><a href="">hello-world</a> - Simple request handler</li>
+        <li><a href="">markdown</a> - Markdown as template engine</li>
+        <li><a href="">multi-router</a> - Working with multiple Express routers</li>
+      <li>multipart</a> - Accepting multipart-encoded forms</li>
+        <li><a href="">mvc</a> - MVC-style controllers</li>
+        <li><a href="">nline</a> - Tracking online user activity with online and redis packages</li>
+        <li><a href="">params</a> - Working with route parameters</li>
+        <li><a href="">resource</a> - Multiple HTTP operations on the same resource</li>
+        <li><a href="">route-map</a> - Organizing routes using a map</li>
+        <li><a href="">route-middleware</a> - Working with route middleware</li>
+        <li><a href="">route-separation</a> - Organizing routes per each resource</li>
+        <li><a href="">search</a> - Search API</li>
+        <li><a href="">session</a> - User sessions</li>
+        <li><a href="">static-files</a> - Serving static files</li>
+        <li><a href="">vhost</a> - Working with virtual hosts</li>
+        <li><a href="">view-constructor</a> - Rendering views dynamically</li>
+        <li><a href="">view-locals</a> - Saving data in request object between middleware calls</li>
+        <li><a href="">web-service</a> - Simple API service</li>
+      </ul>
+
+      [...]
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>
+      Documentation translations provided by StrongLoop/IBM: French, German, Spanish, Italian, Japanese, Russian, Chinese, Traditional Chinese, Korean, Portuguese.
+Community translation available for: Slovak, Ukrainian, Uzbek, Turkish and Thai.
+    </p>
+
+    <ul>
+      <li>Express is a project of the <a href="">OpenJS Foundation</a>.</li>
+      <li>Edit this page on <a href="">GitHub</a></li>
+      <li>Copyright © 2017 StrongLoop, IBM, and other expressjs.com contributors.</li>
+    </ul>
+
+    <p class="dev-note">
+    This is not the official Express.js Website's Documentation, it is just a development project of the freeCodeCamp Responsive Web Design's course. 
+    </p>
+  </footer>
+</body>
+</html>

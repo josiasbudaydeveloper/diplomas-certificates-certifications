@@ -1,0 +1,49 @@
+** start of undefined **
+
+<input type="text" id="text-input" />
+<button id="check-btn" onClick="isPalindrome()">Check</button>
+<div id="result" />
+
+<script>
+  function isPalindrome() {
+    const regex = /[^A-Za-z0-9]/g;
+
+    const inputText = document.getElementById("text-input");
+    const originalText = inputText.value;
+    let text = originalText;
+
+    if (!text) {
+      return alert("Please input a value");
+    }
+
+    text = text.replaceAll(regex, "");
+    text = text.toLowerCase();
+    
+    let invertedText = text.split('');
+    invertedText = invertedText.reverse().join('');
+
+    const resultElement = document.getElementById("result");
+
+    if (text === invertedText) {
+      resultElement.innerText = `${originalText} is a palindrome`;
+      return true;
+    }
+   resultElement.innerText = `${originalText} is not a palindrome`;
+   return false; 
+  }
+</script>
+
+** end of undefined **
+
+** start of undefined **
+
+
+
+** end of undefined **
+
+** start of undefined **
+
+
+
+** end of undefined **
+

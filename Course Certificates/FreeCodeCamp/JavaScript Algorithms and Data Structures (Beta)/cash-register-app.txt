@@ -1,0 +1,151 @@
+** start of undefined **
+
+<input type="number" id="cash" />
+<button id="purchase-btn" onClick="purchase()">purchase</button>
+<div id="change-due" />
+
+<script src="script.js">
+</script>
+
+** end of undefined **
+
+** start of undefined **
+
+
+
+** end of undefined **
+
+** start of undefined **
+
+let price = 19.5;
+let cid = [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]];
+
+function calculateChange(price, cid) {
+  cid = cid.reverse();
+  const response = document.getElementById('change-due');
+  response.innerHTML = '';
+  const originalCash = document.getElementById('cash').value;
+  if (!originalCash) {
+    alert("Please enter with your cash in order to proceed with the purchase");
+    return false;
+  }
+  let cash;
+  try {
+    cash = parseFloat(originalCash);
+
+    if (typeof cash !== 'number') {
+      throw new Error("Please provide a valid number!");
+    }
+  } 
+  catch(error) {
+    alert(error.message);
+    return false;
+  }
+
+  const VALUES = [
+    ["ONE HUNDRED", 100],
+    ["TWENTY", 20],
+    ["TEN", 10],
+    ["FIVE", 5],
+    ["ONE", 1],
+    ["QUARTER", 0.25],
+    ["DIME", 0.1],
+    ["NICKEL", 0.05],
+    ["PENNY", 0.01],
+  ];
+  let cidUnitsCounted = {
+    "ONE HUNDRED": Math.round(cid[0][1]/VALUES[0][1]),
+    "TWENTY": Math.round(cid[1][1]/VALUES[1][1]),
+    "TEN": Math.round(cid[2][1]/VALUES[2][1]),
+    "FIVE": Math.round(cid[3][1]/VALUES[3][1]),
+    "ONE": Math.round(cid[4][1]/VALUES[4][1]),
+    "QUARTER": Math.round(cid[5][1]/VALUES[5][1]),
+    "DIME": Math.round(cid[6][1]/VALUES[6][1]),
+    "NICKEL": Math.round(cid[7][1]/VALUES[7][1]),
+    "PENNY": Math.round(cid[8][1]/VALUES[8][1])
+  }
+  const totalCid = (() => {
+    let total = 0;
+    for (let i in cid) {
+      total += cid[i][1];
+    }
+    return total;
+  })();
+  let cashDifference;
+  let changeValue;
+  let changeArray = [];
+
+  if (cash < price) {
+    alert("Customer does not have enough money to purchase the item");
+    return false;
+}
+  if (cash === price) {
+    response.innerText = "No change due - customer paid with exact cash";
+    return false;
+  }
+
+  changeValue = cash - price;
+  let aux = 0;
+  for (let i in VALUES) {
+    let howManyWeHave = cidUnitsCounted[VALUES[i][0]];
+
+    if (howManyWeHave === 0) {
+      continue;
+    }
+    if (changeValue < VALUES[i][1]) continue;
+    if (aux === changeValue) {
+      break;
+    }
+    if ((aux + VALUES[i][1]) > changeValue) {
+      continue;
+    }
+    let timesValueShouldBeUsed = parseInt(Math.round(((changeValue-aux) / VALUES[i][1])*100)/100);
+    
+    if(howManyWeHave < timesValueShouldBeUsed) {
+      timesValueShouldBeUsed = howManyWeHave;
+    }
+    aux += VALUES[i][1]*timesValueShouldBeUsed;
+
+    if ((i == VALUES.length -1) && aux < changeValue) {
+      response.innerText = "Status: INSUFFICIENT_FUNDS";
+      return false;
+    }
+
+    changeArray.push([
+      VALUES[i][0],
+      VALUES[i][1]*timesValueShouldBeUsed
+    ]);
+  }
+
+  if (changeValue > totalCid) {
+    response.innerText = "Status: INSUFFICIENT_FUNDS";
+    return false;
+  }
+
+  let responseText = '';
+  for (let i of changeArray) {
+    responseText += `
+      ${i[0]}: $${i[1]} <br />
+    `;
+  }
+
+  if (changeValue === totalCid) {
+    response.innerHTML = `
+      Status: CLOSED ${responseText}
+    `
+    return true;
+  }
+
+  response.innerHTML = `
+    STATUS: OPEN <br />
+    ${responseText}
+    `
+  return true;
+}
+
+function purchase() {
+  calculateChange(price, cid);
+}
+
+** end of undefined **
+

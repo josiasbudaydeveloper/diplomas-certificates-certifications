@@ -1,0 +1,219 @@
+** start of undefined **
+
+<input type="text" id="search-input" placeholder="Please enter a pokemon name or id" required />
+<button id="search-button" onClick="searchPokemonInfo()">search</button>
+
+<br />
+
+<img id="sprite" />
+
+<br />
+
+<div>
+  <h4>Basic Info:</h4>
+  <ul>
+    <li>
+      Name: <span id="pokemon-name" />
+    </li> 
+
+    <li>
+      Id: <span id="pokemon-id" />
+    </li>
+
+    <li>
+      Weight: <span id="weight" />
+    </li>
+
+    <li>
+      Height: <span id="height" />
+    </li>
+
+    <li>
+      Types:
+        <ul id="types">
+        <ul>
+    </li>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Base</th>
+      <th>Stats</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Hp</td>
+      <td id="hp" />
+    </tr>
+
+    <tr>
+      <td>Attack</td>
+      <td id="attack" />
+    </tr>
+
+    <tr>
+      <td>Defense</td>
+      <td id="defense" />
+    </tr>
+
+    <tr>
+      <td>Special Attack</td>
+      <td id="special-attack" />
+    </tr>
+
+    <tr>
+      <td>Special Defense</td>
+      <td id="special-defense" />
+    </tr>
+
+    <tr>
+      <td>Speed</td>
+      <td id="speed" />
+    </tr>
+  </tbody>
+</table>
+
+<script src='./script.js' />
+
+** end of undefined **
+
+** start of undefined **
+
+
+
+** end of undefined **
+
+** start of undefined **
+
+async function searchPokemonInfo() {
+    const searchElement = document.getElementById('search-input');
+    
+
+    const spriteElement = document.getElementById('sprite');
+    const nameElement = document.getElementById('pokemon-name');
+    const idElement = document.getElementById('pokemon-id');
+    const weightElement = document.getElementById('weight');
+    const heightElement = document.getElementById('height');
+    const typesElement = document.getElementById('types');
+    const hpElement = document.getElementById('hp');
+    const attackElement = document.getElementById('attack');
+    const defenseElement = document.getElementById('defense');
+    const specialAttackElement = document.getElementById('special-attack');
+    const specialDefenseElement = document.getElementById('special-defense');
+    const speedElement = document.getElementById('speed');
+
+    const elements = [
+      spriteElement,
+      nameElement,
+      idElement,
+      weightElement,
+      heightElement,
+      typesElement,
+      hpElement,
+      attackElement,
+      defenseElement,
+      specialAttackElement,
+      specialDefenseElement,
+      speedElement
+    ];
+
+    function clearElements() {
+      for (let i in elements) {
+        if (i === 0 ) {
+          elements[i].src = '';
+        } 
+        else if (i === 5) {
+          elements[i].innerHTML = '';
+        }
+        else {
+          elements[i].innerText = '';
+        }
+      }
+    }
+
+    clearElements();
+
+    let pokemon = searchElement.value;
+    pokemon = formatPokemonName(pokemon);
+
+    try {
+      var response = await fetch(`https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${pokemon}`);
+      if (response.status !== 200) throw new Error('Pokémon not found');
+    } catch(error) {
+      alert(error.message);
+      clearElements();
+
+      return false;
+    }
+
+    if (!searchElement.value) {
+      alert('Please enter a pokémon name or id');
+      clearElements();
+
+      return false;
+    }
+
+    const pokemonInformation = await response.json();
+    const originalPokemonTypes = pokemonInformation.types;
+    let formattedPokemonTypes = [];
+
+    for (let i in originalPokemonTypes) {
+      formattedPokemonTypes[i] = originalPokemonTypes[i].type.name.toUpperCase();
+    }
+
+    searchElement.value = '';
+
+    // Feeling basic information
+    spriteElement.src = pokemonInformation.sprites.front_default;
+    nameElement.innerText = pokemonInformation.name.toUpperCase();
+    idElement.innerText = pokemonInformation.id;
+    weightElement.innerText = pokemonInformation.weight;
+    heightElement.innerText = pokemonInformation.height;
+
+    for (let i in formattedPokemonTypes) {
+      typesElement.innerHTML += `
+        <li>
+          ${formattedPokemonTypes[i]}
+        </li>
+      `;
+    }
+
+    // Feeling the stats
+    hpElement.innerText = pokemonInformation.stats[0].base_stat;
+    attackElement.innerText = pokemonInformation.stats[1].base_stat;
+    defenseElement.innerText = pokemonInformation.stats[2].base_stat;
+    specialAttackElement.innerText = pokemonInformation.stats[3].base_stat;
+    specialDefenseElement.innerText = pokemonInformation.stats[4].base_stat;
+    speedElement.innerText = pokemonInformation.stats[5].base_stat;
+
+    return true;
+  }
+
+  // Formatting PokemonName 
+  function formatPokemonName(name) {
+    // Convert to lowercase
+    let formattedName = name.toLowerCase();
+
+    // Replace special characters with a dash
+    formattedName = formattedName.replace(/[^a-z0-9]/gi, '-');
+
+    // Replace multiple dashes with a single dash
+    formattedName = formattedName.replace(/-+/g, '-');
+
+    // Check for gender symbols and format accordingly
+    if (formattedName.includes('♀')) {
+      formattedName = formattedName.replace('♀', '') + '-f';
+    } else if (formattedName.includes('♂')) {
+      formattedName = formattedName.replace('♂', '') + '-m';
+    }
+
+    // Remove trailing dashes
+    formattedName = formattedName.replace(/^-+|-+$/g, '');
+
+    return formattedName;
+  }
+
+** end of undefined **
+

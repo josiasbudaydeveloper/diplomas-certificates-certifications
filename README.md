@@ -1,2 +1,2 @@
-# freeCodeCamp-Responsive-Web-Design
-These are my certification projects of the freeCodeCamp's Responsive Web Design free course.
+# My Certifications
+These is a repository I created to show my gratuation and course certificates, both from graduation and courses

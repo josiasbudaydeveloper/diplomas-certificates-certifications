@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>25 + 5 Clock</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Bootstrap icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function MyApp() {
+        const initialState = {
+          breakLength: 5,
+          sessionLength: 25,
+          session: "25:00",
+          hasStarted: false,
+          isBreak: false
+        };
+
+        const breakDecrement = 'break-increment';
+        const breakIncrement = 'break-decrement';
+        const sessionDecrement = 'session-decrement';
+        const sessionIncrement = 'session-increment';
+        const startStop = 'start-stop';
+        const startStopBreak = 'start-stop-break';
+        const updateTimer = 'update-timer';
+        const reset = 'reset';
+
+        function pomodoroReducer(state, action) {
+          switch (action.type) {
+            case breakDecrement:
+              if (state.breakLength === 1) {
+                return {
+                  ...state,
+                  breakLength: 1
+                }
+              }
+
+              return {
+                ...state,
+                breakLength: state.breakLength - 1
+              }
+            case breakIncrement:
+              if (state.breakLength === 60) {
+                return {
+                  ...state,
+                  breakLength: 60
+                }
+              }
+
+              return {
+                ...state,
+                breakLength: state.breakLength + 1
+              }
+            case sessionDecrement:
+              if (state.sessionLength === 1) {
+                return {
+                  ...state,
+                  sessionLength: 1,
+                  session: `01:00`
+                }
+              }
+
+              return {
+                ...state,
+                sessionLength: state.sessionLength - 1,
+                session: ((state.sessionLength - 1) < 10) ? 
+                  `0${state.sessionLength - 1}:00` : 
+                  `${state.sessionLength - 1}:00`
+              }
+            case sessionIncrement:
+            if (state.sessionLength === 60) {
+              return {
+                ...state,
+                sessionLength: 60,
+                session: `60:00`
+              }
+            }
+
+              return {
+                ...state,
+                sessionLength: state.sessionLength + 1,
+                session: ((state.sessionLength + 1) < 10) ? 
+                  `0${state.sessionLength + 1}:00` : 
+                  `${state.sessionLength + 1}:00`
+              }
+            case startStop:
+              return {
+                ...state,
+                hasStarted: (state.hasStarted) ? false : true
+              };
+            case startStopBreak:
+              if (state.isBreak) {
+                return {
+                  ...state,
+                  isBreak: false                  
+                }
+              }
+
+              return {
+                ...state,
+                isBreak: true
+              }
+            case updateTimer:
+              return {
+                ...state,
+                session: action.value
+              }
+            case reset:
+              beepRef.current.pause();
+              beepRef.current.currentTime = 0;
+              return initialState;
+          }
+        }
+
+        const beepRef = React.useRef();
+        const [state, dispatch] = React.useReducer(pomodoroReducer, initialState);
+
+        React.useEffect(() => {
+          let interval;
+          let minutes;
+          let seconds;
+          const sessionArray = state.session.split(':');
+          
+          if (!state.isBreak) {
+            minutes = (state.sessionLength.length === 1) ? `0${state.sessionLength}`: state.sessionLength;
+            seconds = 0;
+          }
+          else if (state.isBreak) {
+            minutes = (state.breakLength.length === 1) ? `0${state.breakLength}`: state.breakLength;
+            seconds = 0;
+          } 
+          else {
+            minutes = sessionArray[0];
+            seconds = sessionArray[1];
+          }
+
+          if (state.hasStarted) {
+            interval = setInterval(() => {
+              minutes = parseInt(minutes);
+              seconds = parseInt(seconds);
+
+              if (seconds !== 0) {
+                seconds -= 1;
+              }
+              if (seconds === 0 && minutes !== 0) {
+                minutes -= 1;
+                seconds = 59;
+              }
+              if (seconds === 0 && minutes === 0) {
+                beepRef.current.play();
+                dispatch({type: startStopBreak});
+              }
+              if (seconds < 10) {
+                seconds = `0${seconds}`;
+              }
+              if (minutes < 10) {
+                minutes = `0${minutes}`;
+              }
+              dispatch({
+                type: updateTimer,
+                value: `${minutes}:${seconds}`
+              });
+            }, 1000);
+          }
+
+          return () => clearInterval(interval);
+        }, [state.hasStarted, state.sessionLength, state.breakLength, state.isBreak]);
+
+        return (
+          <main>
+            <div>
+              <h1>Pomodoro Technique</h1>
+              <div>
+                <div id="break-label">
+                  <h1>Break Length</h1>
+                  <div>
+                    <button id="break-decrement" onClick={() => dispatch({type: breakDecrement})}>
+                      <i className="bi bi-arrow-down"></i>
+                    </button>
+
+                    <span id="break-length">
+                      { state.breakLength }
+                    </span>
+
+                    <button id="break-increment" onClick={() => dispatch({type: breakIncrement})}>
+                      <i className="bi bi-arrow-up"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="session-label">
+                  <h1>Session Length</h1>
+                  <div>
+                    <button id="session-decrement" onClick={() => dispatch({type: sessionDecrement})}>
+                      <i className="bi bi-arrow-down"></i>
+                    </button>
+
+                    <span id="session-length">
+                      { state.sessionLength }
+                    </span>
+
+                    <button id="session-increment" onClick={() => dispatch({type: sessionIncrement})}>
+                      <i className="bi bi-arrow-up"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h1 id="timer-label">
+                  {!(state.isBreak) ? 'Session' : 'Break'}
+                </h1>
+                <span id="time-left">
+                  {state.session}
+                </span>
+
+                <button id="start_stop" onClick={() => dispatch({type: startStop})}>
+                  <i className="bi bi-play-fill"></i>
+                  <i className="bi bi-pause-fill"></i>
+                </button>
+
+                <button id="reset" onClick={() => dispatch({type: reset})}>
+                  <i className="bi bi-arrow-clockwise"></i>
+                </button>
+
+                <audio id="beep" ref={beepRef} src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav" />
+              </div>
+            </div>
+          </main>
+        );
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+    </script>
+  </body>
+</html>

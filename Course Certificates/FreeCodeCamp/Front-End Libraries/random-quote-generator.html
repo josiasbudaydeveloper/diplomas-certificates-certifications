@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Random Quote Generator</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #0A0500;
+        font-family: sans-serif;
+      }
+
+      #quote-box {
+        max-width: 800px;
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+      }
+
+      #quote {
+        margin-bottom: 20px;
+      }
+
+      #quote hr {
+        border: 1px solid black;
+      }
+
+      #quote #author {
+        text-align: right;
+      }
+
+      #handle-quotes {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      #handle-quotes .btn {
+        background-color: #0a0500;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      #handle-quotes .btn:hover {
+        color: black;
+        background-color: white;
+        border: 2px solid #0a0500;
+        padding: 8px 13px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+    function Toggle() {
+      const [toggle, setToggle] = React.useState(true);
+
+      function handleClick() {
+        setToggle(!toggle);
+      }
+      
+      return (
+        <button onClick={handleClick}>
+          { toggle ? 'ON' : 'OFF' }
+        </button>
+      );
+}
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<Toggle />);
+
+    </script>
+  </body>
+</html>

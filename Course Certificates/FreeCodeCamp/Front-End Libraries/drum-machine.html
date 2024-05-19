@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Drum Machine</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      body, html {
+        margin: 0;
+        height: 100vh;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: sans-serif;
+      }
+      #drum-machine {
+        display: grid;
+        grid-template-columns: auto auto;
+        border: 5px solid orange;
+        background-color: lightgray;
+        padding: 15px;
+      }
+      #display {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 15px;
+        width: 150px;
+      }
+      #drum-pads {
+        display: grid;
+        grid-template-columns: auto auto auto;
+      }
+      .drum-pad {
+        width: 50px;
+        height: 50px;
+        margin: 1px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 1px 1px 5px black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+      function MyApp() {
+        const [pressedKey, setPressedKey] = React.useState();
+        const soundRefs = React.useRef([]);
+        const buttonRefs = React.useRef([]);
+        const audioClips = [
+          {
+            keyCode: 81,
+            keyTrigger: 'Q',
+            id: 'Chord-1',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
+          },
+          {
+            keyCode: 87,
+            keyTrigger: 'W',
+            id: 'Chord-2',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
+          },
+          {
+            keyCode: 69,
+            keyTrigger: 'E',
+            id: 'Chord-3',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
+          },
+          {
+            keyCode: 65,
+            keyTrigger: 'A',
+            id: 'Shaker',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3'
+          },
+          {
+            keyCode: 83,
+            keyTrigger: 'S',
+            id: 'Open-HH',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3'
+          },
+          {
+            keyCode: 68,
+            keyTrigger: 'D',
+            id: 'Closed-HH',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
+          },
+          {
+            keyCode: 90,
+            keyTrigger: 'Z',
+            id: 'Punchy-Kick',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
+          },
+          {
+            keyCode: 88,
+            keyTrigger: 'X',
+            id: 'Side-Stick',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
+          },
+          {
+            keyCode: 67,
+            keyTrigger: 'C',
+            id: 'Snare',
+            url: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3'
+          }
+        ];
+
+        function playSoundByKey(key) {
+          const index = audioClips.findIndex(clip => clip.keyTrigger === key);
+          if (index !== -1) {
+            playSound(index);
+          }
+        }
+
+        function playSound(index) {
+          setPressedKey(audioClips[index].keyTrigger);
+          if (soundRefs.current[index] && buttonRefs.current[index]) {
+            buttonRefs.current[index].style.backgroundColor = 'orange';
+            soundRefs.current[index].play();
+          }
+
+          setTimeout(() => {
+            buttonRefs.current[index].style.backgroundColor = ''; // Revert to the default color
+          }, 200);
+        }
+
+        React.useEffect(() => {
+            // Initialize the refs array with the same length as audioClips
+            soundRefs.current = soundRefs.current.slice(0, audioClips.length);
+            buttonRefs.current = buttonRefs.current.slice(0, audioClips.length);
+
+            function handleKeyDown(event) {
+              const key = event.key.toUpperCase();
+              playSoundByKey(key);
+            }
+
+            window.addEventListener('keydown', handleKeyDown);
+
+            // Cleanup the event listener
+            return () => {
+              window.removeEventListener('keydown', handleKeyDown);
+            };
+          }, [audioClips]);
+
+        return (
+          <main>
+            <div id="drum-machine">
+              <div id="display">
+                { pressedKey ? pressedKey : 'Press any key' }
+              </div>
+              <div id="drum-pads">
+                {audioClips.map((clip, index) => (
+                  <button key={clip.id} id={clip.id}
+                    onClick={() => playSound(index)} className="drum-pad" 
+                    ref={(el) => (buttonRefs.current[index] = el)}
+                  >
+                    { clip.keyTrigger }
+                    <audio ref={(el) => (soundRefs.current[index] = el)} src={clip.url} className="clip" id={ clip.keyTrigger } />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </main>
+        );
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<MyApp />);
+
+    </script>
+  </body>
+</html>
